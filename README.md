@@ -1,8 +1,24 @@
 # BrowserTime
 Extension to change from 12 hour to 24 hour format.
-Text Input fields (like search engine or anywhere else) are not touched
+Text Input fields (like search engine or anywhere else) and rich text editors (contenteditable, like Discord message box) are not touched
 
-Website will be ~~fixed~~ edited within half of 1 second (500ms)
+Understands:
+- `5:10 pm`, `5:10PM`, `5:10 p.m.`, `11:59:30 PM`, `8:30p`
+- dots instead of colons: `05.10 pm` → `17.10`
+- hours only: `8 AM - 12 PM`, `8AM`, `Reopens 3 pm`
+- ranges where only the end has am/pm (Google Maps/Search): `9:30–1 pm` → `09:30–13:00`, `3–6 pm` → `15:00–18:00`
+
+Bare `8p`/`10a` without minutes are left alone (too many false positives like "Room 8a")
+
+Changed text is converted right before the page is drawn (no more polling every 500ms), including late-loading content on Discord, Google Maps etc.
+
+Extension popup (toolbar icon), for "This site" or "All sites" (a site's own settings win; "Use All sites settings" resets it):
+- turn it off (original text comes back)
+- switch single rules off: ranges (`3–6 pm`), hour only (`8 AM`), dot separator (`8.00 am`), a/p shorthand (`8:30p`)
+- output: keep the site's separator (`08.00`) or always use a colon (`08:00`)
+- see what was converted on the page and by which rule (e.g. `3-5 pm` → `15:00-17:00`, range)
+
+The userscript version has no popup and runs everywhere with everything on.
 
 There might be some JavaScript errors thrown, might not work everywhere, but seems to work not that terribly...
 

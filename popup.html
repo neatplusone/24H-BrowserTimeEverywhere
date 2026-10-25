@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root { color-scheme: light dark; --muted: #6b6b6b; --line: #d0d0d0; --accent: #1a73e8; --tab-bg: #ececec; }
+    @media (prefers-color-scheme: dark) { :root { --muted: #a0a0a0; --line: #444; --accent: #8ab4f8; --tab-bg: #333; } }
+    body { font: 13px system-ui, sans-serif; margin: 0; padding: 12px; width: 340px; }
+    h1 { font-size: 14px; margin: 0 0 8px; }
+    label { display: flex; gap: 8px; align-items: baseline; cursor: pointer; padding: 2px 0; }
+    #host { font-weight: 600; word-break: break-all; }
+    .muted { color: var(--muted); }
+    .ex { color: var(--muted); font: 11px ui-monospace, monospace; margin-left: auto; white-space: nowrap; }
+    .tabs { display: flex; background: var(--tab-bg); border-radius: 6px; padding: 2px; margin: 4px 0 8px; }
+    .tabs button { flex: 1; border: 0; background: none; padding: 4px; border-radius: 4px; font: inherit; color: inherit; cursor: pointer; }
+    .tabs button.active { background: Canvas; font-weight: 600; }
+    fieldset { border: 0; padding: 0; margin: 0 0 8px; }
+    fieldset:disabled { opacity: .5; }
+    legend { font-weight: 600; font-size: 12px; padding: 0; margin: 6px 0 2px; }
+    #reset { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; font: inherit; }
+    #hits { border-top: 1px solid var(--line); padding-top: 8px; max-height: 260px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    td { padding: 3px 4px; vertical-align: top; }
+    td.rule { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    td.count { color: var(--muted); text-align: right; }
+    code { font: 12px ui-monospace, monospace; }
+  </style>
+</head>
+<body>
+  <h1>24-Hour Time</h1>
+  <div id="unavailable" class="muted" hidden>Not available on this page.</div>
+  <div id="main" hidden>
+    <div class="tabs">
+      <button id="scope-site" class="active">This site</button>
+      <button id="scope-global">All sites</button>
+    </div>
+    <div id="scope-note" class="muted"></div>
+
+    <label><input type="checkbox" data-key="enabled"> <span id="enabled-label">Convert times</span></label>
+
+    <fieldset id="rules">
+      <legend>Convert</legend>
+      <label><input type="checkbox" data-key="range"> Ranges <span class="ex">3–6 pm</span></label>
+      <label><input type="checkbox" data-key="hourOnly"> Hour only <span class="ex">8 AM</span></label>
+      <label><input type="checkbox" data-key="dot"> Dot separator <span class="ex">8.00 am</span></label>
+      <label><input type="checkbox" data-key="shorthand"> a/p shorthand <span class="ex">8:30p</span></label>
+      <legend>Output</legend>
+      <label><input type="radio" name="colon" value="false"> Keep site's separator <span class="ex">08.00</span></label>
+      <label><input type="radio" name="colon" value="true"> Always colon <span class="ex">08:00</span></label>
+    </fieldset>
+
+    <div id="hits"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

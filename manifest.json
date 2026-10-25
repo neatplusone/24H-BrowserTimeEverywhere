@@ -8,19 +8,41 @@
     "128": "icons/128.png"
   },
   "manifest_version": 3,
-  "version": "2.0.0.1",
-  "permissions": ["activeTab", "scripting"],
+  "version": "2.2.0.0",
+  "permissions": [
+    "storage"
+  ],
   "browser_specific_settings": {
-  "gecko": {
-    "id": "{22a060e3-5146-47d4-8cec-a3ae2ddc9c63}"
-  }
-},
+    "gecko": {
+      "id": "{22a060e3-5146-47d4-8cec-a3ae2ddc9c63}",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
   "content_scripts": [
     {
-      "matches": ["https://*/*", "http://*/*"],
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
       "js": [
         "12hto24h.user.js"
-      ]
+      ],
+      "all_frames": true,
+      "match_about_blank": true
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    },
+    "default_title": "24-Hour Time"
+  }
 }
