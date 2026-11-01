@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         12 hour am pm to 24 hour format
 // @namespace    https://*
-// @version      2.2.f12h
+// @version      2.2.1.f12h
 // @description  Convert all elements with 12-hour time to 24-hour automatically for all websites. Tested: Discord, Cloud Hetzner Console, Google Maps/Search
 // @author       dw5
 // @homepage     https://github.com/dw5/24H-BrowserTimeEverywhere
@@ -14,8 +14,12 @@
 
 // letters/digits of any script, so 8AMé or ...ü8 am are not matched
 var WORD = '\\p{L}\\p{M}\\p{N}_';
-// not inside fractions/dates/prices: 1/8 AM, 2023-10-5 pm, $5 pm
-var BEFORE = '(?<![' + WORD + '.:/$£€¥])(?<!\\d-)';
+// not inside fractions/prices: 1/8 AM, $5 pm
+var BEFORE = '(?<![' + WORD + '.:/$£€¥])';
+// not inside dates: 2023-10-5 pm
+var NOT_AFTER_HYPHEN = '(?<!\\d-)';
+// same, but a date's year may come right before the time: "Oct 27, 2026-6pm" (not 2020-2026-5 pm, SKU-2026-5pm)
+var NOT_AFTER_HYPHEN_EXCEPT_YEAR = '(?:(?<!\\d-)|(?<=,\\s\\d{4}-))';
 // a range doesn't start right after a month: "Nov 3 - 5 pm" is a date, then a time ("Mon 9–5 pm" is fine)
 var NOT_DATE = '(?<!(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\\.?\\s)';
 
@@ -25,13 +29,13 @@ var MINUTES = '([0-5]\\d)';
 
 // 9:30–1 pm, 3–6 pm, 8.00 - 7.00 pm, 9 to 5 pm (start has no am/pm of its own)
 var rangeRegex = new RegExp(
-  BEFORE + NOT_DATE + '(\\d{1,2})(?:([:.])' + MINUTES + ')?' +
+  BEFORE + NOT_AFTER_HYPHEN + NOT_DATE + '(\\d{1,2})(?:([:.])' + MINUTES + ')?' +
   '(\\s?[-–—]\\s?|\\s+to\\s+)' +
   '(\\d{1,2})(?:([:.])' + MINUTES + ')?' + MERIDIEM, 'giu');
 
 // 5:10 pm, 05.10 p.m., 8AM, 11:59:30 PM, 8:30p
 var timeRegex = new RegExp(
-  BEFORE + '(\\d{1,2})(?:([:.])' + MINUTES + '(?:\\2' + MINUTES + ')?)?' + MERIDIEM, 'giu');
+  BEFORE + NOT_AFTER_HYPHEN_EXCEPT_YEAR + '(\\d{1,2})(?:([:.])' + MINUTES + '(?:\\2' + MINUTES + ')?)?' + MERIDIEM, 'giu');
 
 // "am" is also a German word ("Fig. 2 am Rand"), so on German pages only "9 AM"/"9am"/"9:00 am" count
 function isGermanAm(match, minutes) {
